@@ -1,0 +1,55 @@
+# jcr_section_custom v0.1
+# Adds a custom field to the sections panel
+# jcr / txpbuilders
+# http://txp.builders
+
+# ......................................................................
+# This is a plugin for Textpattern - http://textpattern.com/
+# To install: textpattern > admin > plugins
+# Paste the following text into the 'Install plugin' box:
+# ......................................................................
+
+H4sIAAAAAAAAE60Y227byvFZ/IoBE5SSYVOW7NwY25UbJ40Ln8Tw5RTFyQGxIpcSjymS2F1a
+doMA+Yc+9Qf6Ef2cfElndpcSKdM9SVEBpsndmdm5X5YFo73gswz2AzdnC+6+lsHoZeD+FolQ
+8kilRR5GlVTFgnZeBO4tFxIX6WsvcHf9Eb09D1xWqXkhNPoLjQ5DUHfltEqzGFH0xm4NFlYi
+1SuvAneuVBkMhwjrt4BHgRtzGYm0VPa8fVw6jmMJDAxLkKQ8i0EVoOYcLLsSSpbzjBCeBW4h
+kKCmF7jPNJHAVfclt0sjC5ZkbCbt2pj+owoUv1Mli24MNyjUkwmLF2nuPJlkLJ9VbMaB5zuz
+qfNQWXB4BJdmBU4XBHl60sSL+U7MH8G7qKYivYE/oS52Tk8sz3OelVrn+6jE3sF8dHQwxIeD
+P/wa09dYf5lvSONDN82lYlnGtP7WEKt9RTLX6wel4EcHURHjc2j/0ZLF2CO4vTY+v2OLMuOy
+QftxKr2Dkt6PNvn9Xgx9Ysx/T6ZojirmWTFbbT7CfCR4nKo171bPxAG9jl+8QheIMiYlPDST
+89npDbe2nB5swWmeqpRlqeQ+fQ/xkVS5MX0YRuiQSlSR6g+cHmL1hkN4XxQ3kOa1295LxRee
+hAjlmqK/SaTTE3yW4roI69U+E4Ld98Pwzdnx5WUYboOXpQmP7qOMewP8KrNqlubhatF/yLY3
+eP2dpKtU06zR8RO/MB54HocxVyzNwqQQP0BQslveJOk1qJs9pPTFMWoFQL1ipAPLYxB8Udzy
+dsQnAl8xY9TygWJTlFgjGuxJyQRbwFN+y3MFaII0n7V3kOPSbgBcoSFWmoNyziSHIkH7pJhO
+tGI18hCfZTXN0ggx0QejtalX2H1z5rY5YYAYnwkXf3KZqmgOfbOxWqZfRAd6PCcxYi9o7NBv
+Kji7ef0APE7lD8Hb2OlAkCzhIcvQhv2NHQCvoWdv++H28ckJvPl4dv3Th45AgZ+PL968P77o
+j589G8CH67MzOH539fYCVKrQbzeoDV5/p+A84+r/LMbJxcfzx+X4MU6/2P+Cq0rktFp7NiWM
+c4axDyzG9IMHsMz4tAQMqLqGtbydkDRip0/3ul26tR5Xi8V914bAWkqhqv0/qoTQhK2SJMRM
+MQNvJGmQwDT3SCBUaTsCtu3523ScTYKYSQTDnJgdKyVttsDlnteheSqJnoe7A01hG3YHqH2d
+dognQkvzslJnbMqzfheFbUhOCaLvUUmnzNMJ9PThKoJ667/TD+fXV+HF2z9fnx1f2OWuJPvI
+sp83Uhxp9RLzXtMPuowv/2frP24hyrebWapllri4xMI375eSWeN0a8yjjtEbDKxBdPhVJXoN
+72+EW68H0NFTwiF4HWr3XMLo6YZUg+hzXPIBrUJUYppAH4/ASOIiYRGCHSKg7s88Sq06AnO+
+7Ihl5PUL8EzybhpGaWsiBKX7gJDfYZmTfe/Tle4MFaLln67Y7NOFLoDiHlXRyOpXd2UQzLj6
+rwitNLJzVJfSToXbpIPSfyHWVpXy3JgZ27kAPlYKPb12odqjTB6BRvmrK99T5Er+gn02K/mv
+8KbIsb9H7yp5hD0NYDdFDoEtOTXZ769+OsOOF1N3yqVvybUyQ7tKF5oXA2c6PPNufweo+6DD
+JwwzhzgYLDIXhhbJNoe2DGtFrBz6IZG+lstod22RWVZMUaqnVNYt/GtntYsmRtlrQv1BY6sz
+X7XKh2HaJCtivFFiKG9pbpoUrdowDDUikOdpvLZH/JG6HGsNMobsN5n/pctLfm1TCOD3Maxf
+2bmHRo1QsKVug8cvccqbj/yuJtixw5hEy2PXpJW04QEJVCW5Dpb/DWei1tc9F1yiQ+luHr59
+/Xc9M0k3sGNhXETSV+vw8dNiqKOc4kfjDeu5b0fPfWb6051jKYrbFGdImhcLrG2yLPKYvBQj
+hVgw/qk5aXLt45gwH/twja0G9RvSceh1Oec55kxh5UxzaoAN5znnsRZqiu28KnCyAGz15qQa
+w5sP7wpC1PNS4DiY+wkMAdC8kNoBEfJqMcUDiPcKT0yxSyDmda9koahJWJNdE8rt/pzfobAZ
+QiE79FKJHQqcNtK3r//SQvafNOepgY/DzPrTcc4Z5iKjHyKxGlkgPCYTaIud6+5Yhkbv22AJ
+aiFMP6tRTBPt21Np8sTTMBWicqeR/2guwOh3TEqTlg9M1lj+dG/OOysmnjHf07QBXUak00qR
+CbdMoG05b03AtZIZyAobc1T25GCyDZOjiWZ/8ocJ+lBqdMmjeaF9B481zm15wUz41hpWu8yk
+zl/uhPBkVeI4i1NkpHOr1N5wwhNWZSqACcX8pFZLPVCjaizJWno0H06YWu7VNYd2MfJqWsBO
+ouEmMmiotVapJrAUrETtH7oV5lbdtB66WepSXj1gMBc8OXSbWFCJ7NAdUR52zQkb+3bNQOj0
+bE417oiTtve4bT2T3Q+G7Mg5GG7yiqYvfR12j9oacDzDSNFXQDrwNGR94fJk000aGqqD/A3d
+F9R2zaiFrJFaLbhDDbJuR3C3xUGEoYdhb+4dYpjem+KZ3BNRplsQQ7aS9TGhjTIzxl7Za6aw
+FsmI665D7MzeGv1QVqyvmlppEf2Kmh24x7QAxTJvZTF7cFJkWbEkXi1xHQsRdhg3sHVdZgWL
+t4x7+fCDN2J/o2O1NrRpBS8zFtFJE401MS69Ym5FUwfjGnkTDlN8SjlXb9ax1L4qGlDM7aSt
+7Ha1SksoHWcYUVirWEL6SZXkWRLAikhtOgtv7iRMSrJlr8iqRW4vJnCVRqcpFg9MRNo1y4b9
+LRFMTHDDsWdvwpubDJxyfkOtgZ3woR9zRkGOnfVgk0SMDTY+9UiMjNfyry7CBtbJ6d2kxp9N
+GoJdf4T+9Q8Y746eD3f3hrv7VJnepQJPFkgP2amJmcsyImXeHOeimFKn+Feu/p4t2L349vWf
+EtwlVyGW3STNuHFWid46Q2tVUz8qFkOxrOGHDdBaHCpuOl4VE0p7IKZcnFHI/kklcGtVRCVF
+mnupeAInbCmLfBUby+XSx7KVxHqZTtX47l+qmxsGl7dsnneyNivw6dt77UWsL4v3xoE73ZuO
+90cjtj/aZfsvo+csGj3fj8ejV+Po2f6II9yX/wBIbegARBcAAA==
