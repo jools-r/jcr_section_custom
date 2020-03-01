@@ -17,10 +17,10 @@ $plugin['name'] = 'jcr_section_custom';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.1';
+$plugin['version'] = '0.15';
 $plugin['author'] = 'jcr / txpbuilders';
 $plugin['author_uri'] = 'http://txp.builders';
-$plugin['description'] = 'Adds a custom field to the sections panel';
+$plugin['description'] = 'Adds multiple custom fields to the sections panel';
 
 // Plugin load order:
 // The default value of 5 would fit most plugins, while for instance comment
@@ -45,7 +45,7 @@ $plugin['type'] = '1';
 if (!defined('PLUGIN_HAS_PREFS')) define('PLUGIN_HAS_PREFS', 0x0001); // This plugin wants to receive "plugin_prefs.{$plugin['name']}" events
 if (!defined('PLUGIN_LIFECYCLE_NOTIFY')) define('PLUGIN_LIFECYCLE_NOTIFY', 0x0002); // This plugin wants to receive "plugin_lifecycle.{$plugin['name']}" events
 
-$plugin['flags'] = '';
+$plugin['flags'] = '2';
 
 // Plugin 'textpack' is optional. It provides i18n strings to be used in conjunction with gTxt().
 // Syntax:
@@ -57,9 +57,17 @@ $plugin['flags'] = '';
 $plugin['textpack'] = <<< EOT
 #@admin
 #@language en-gb
-jcr_section_custom => Section Image ID
+jcr_sec_custom_1 => Hero image
+jcr_sec_custom_2 => Menu title
+jcr_sec_custom_3 => Page title
+jcr_sec_custom_4 => Accent color
+jcr_sec_custom_5 => Background color
 #@language de-de
-jcr_section_custom => Rubrik Bild-ID
+jcr_sec_custom_1 => Titelbild
+jcr_sec_custom_2 => Menüname
+jcr_sec_custom_3 => Seitentitel
+jcr_sec_custom_4 => Akzentfarbe
+jcr_sec_custom_5 => Hintergrundfarbe
 EOT;
 
 // End of textpack
@@ -82,7 +90,7 @@ class jcr_section_custom
 	}
 
 	/**
-   * Add and remove custom field from txp_file table.
+   * Add and remove custom field from txp_section table.
    *
    * @param $event string
    * @param $step string  The lifecycle phase of this plugin
@@ -91,59 +99,107 @@ class jcr_section_custom
   {
       switch ($step) {
           case 'enabled':
+              add_privs('prefs.jcr_section_custom', '1');
               break;
           case 'disabled':
               break;
           case 'installed':
+              // Add section custom fields to txp_section table
               safe_alter(
                 'txp_section',
-                'ADD COLUMN jcr_section_custom VARCHAR(255) NULL AFTER title'
+                'ADD COLUMN jcr_sec_custom_1 VARCHAR(255) NULL AFTER title,
+                 ADD COLUMN jcr_sec_custom_2 VARCHAR(255) NULL AFTER jcr_sec_custom_1,
+                 ADD COLUMN jcr_sec_custom_3 VARCHAR(255) NULL AFTER jcr_sec_custom_2,
+                 ADD COLUMN jcr_sec_custom_4 VARCHAR(255) NULL AFTER jcr_sec_custom_3,
+                 ADD COLUMN jcr_sec_custom_5 VARCHAR(255) NULL AFTER jcr_sec_custom_4'
               );
+              // Add prefs for section custom field names
+              set_pref("section_custom_1_set", "", "jcr_section_custom", "0", "section_custom_set", "1");
+              set_pref("section_custom_2_set", "", "jcr_section_custom", "0", "section_custom_set", "2");
+              set_pref("section_custom_3_set", "", "jcr_section_custom", "0", "section_custom_set", "3");
+              set_pref("section_custom_4_set", "", "jcr_section_custom", "0", "section_custom_set", "4");
+              set_pref("section_custom_5_set", "", "jcr_section_custom", "0", "section_custom_set", "5");
               break;
           case 'deleted':
+            // Remove columns from section table
               safe_alter(
-                'txp_file',
-                'DROP COLUMN jcr_section_custom'
+                'txp_section',
+                'DROP COLUMN jcr_sec_custom_1,
+                 DROP COLUMN jcr_sec_custom_2,
+                 DROP COLUMN jcr_sec_custom_3,
+                 DROP COLUMN jcr_sec_custom_4,
+                 DROP COLUMN jcr_sec_custom_5'
               );
+              // Remove all prefs from event 'jcr_section_custom'.
+              remove_pref(null,"jcr_section_custom");
               break;
       }
       return;
   }
 
 	/**
-	 * Paint additional fields for file custom field
+	 * Paint additional fields for section custom field
 	 *
 	 * @param $event string
 	 * @param $step string
 	 * @param $dummy string
-	 * @param $rs array The current file's data
+	 * @param $rs array The current section's data
 	 * @return string
 	 */
 	public static function ui($event, $step, $dummy, $rs)
 	{
 		extract(lAtts(array(
-			'jcr_section_custom' => ''
+			'jcr_sec_custom_1' => '',
+			'jcr_sec_custom_2' => '',
+			'jcr_sec_custom_3' => '',
+			'jcr_sec_custom_4' => '',
+			'jcr_sec_custom_5' => ''
 		), $rs, 0));
 
 		return
-			inputLabel('jcr_section_custom', fInput('text', 'jcr_section_custom', $jcr_section_custom, '', '', '', INPUT_REGULAR, '', 'jcr_section_custom'), 'jcr_section_custom').n;
+			inputLabel('jcr_sec_custom_1', fInput('text', 'jcr_sec_custom_1', $jcr_sec_custom_1, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_1'), 'jcr_sec_custom_1').n.
+			inputLabel('jcr_sec_custom_2', fInput('text', 'jcr_sec_custom_2', $jcr_sec_custom_2, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_2'), 'jcr_sec_custom_2').n.
+			inputLabel('jcr_sec_custom_3', fInput('text', 'jcr_sec_custom_3', $jcr_sec_custom_3, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_3'), 'jcr_sec_custom_3').n.
+            inputLabel('jcr_sec_custom_4', fInput('text', 'jcr_sec_custom_4', $jcr_sec_custom_4, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_4'), 'jcr_sec_custom_4').n.
+            inputLabel('jcr_sec_custom_5', fInput('text', 'jcr_sec_custom_5', $jcr_sec_custom_5, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_5'), 'jcr_sec_custom_5').n;
 	}
 
 	/**
-	 * Save additional file custom fields
+	 * Save additional section custom fields
 	 *
 	 * @param $event string
 	 * @param $step string
 	 */
 	public static function save($event, $step)
 	{
-		extract(doSlash(psa(array('jcr_section_custom', 'name'))));
-
-		safe_update('txp_section',
-		  "jcr_section_custom = '$jcr_section_custom'",
-			"name = '$name'"
+		extract(doSlash(psa(array('jcr_sec_custom_1', 'jcr_sec_custom_2', 'jcr_sec_custom_3', 'jcr_sec_custom_4', 'jcr_sec_custom_5', 'name'))));
+		$name = assert_string($name);
+		safe_update('txp_section',"
+		   jcr_sec_custom_1 = '$jcr_sec_custom_1',
+		   jcr_sec_custom_2 = '$jcr_sec_custom_2',
+		   jcr_sec_custom_3 = '$jcr_sec_custom_3',
+		   jcr_sec_custom_4 = '$jcr_sec_custom_4',
+		   jcr_sec_custom_5 = '$jcr_sec_custom_5'",
+			"name = $name"
 		);
 	}
+
+	/**
+	 * Renders a HTML section custom field.
+	 *
+	 * Can be altered by plugins via the 'prefs_ui > section_custom_set'
+	 * pluggable UI callback event.
+	 *
+	 * @param  string $name HTML name of the widget
+	 * @param  string $val  Initial (or current) content
+	 * @return string HTML
+	 * @todo   deprecate or move this when CFs are migrated to the meta store
+	 */
+	public static function section_custom_set($name, $val)
+	{
+	    return pluggable_ui('prefs_ui', 'section_custom_set', text_input($name, $val, INPUT_REGULAR), $name, $val);
+	}
+	
 }
 
 if (txpinterface === 'admin') {
@@ -159,28 +215,129 @@ if (txpinterface === 'admin') {
 
 }
 
+/**
+ * Gets a list of section custom fields.
+ *
+ * @return  array
+ */
+function jcr_get_section_custom_fields()
+{
+    global $prefs;
+    static $out = null;
+    // Have cache?
+    if (!is_array($out)) {
+        $cfs = preg_grep('/^section_custom_\d+_set/', array_keys($prefs));
+        $out = array();
+        foreach ($cfs as $name) {
+            preg_match('/(\d+)/', $name, $match);
+            if ($prefs[$name] !== '') {
+                $out[$match[1]] = strtolower($prefs[$name]);
+            }
+        }
+    }
+    return $out;
+}
+
+
+/**
+ * Maps 'txp_section' table's columns to article data values.
+ *
+ * This function returns an array of 'data-value' => 'column' pairs.
+ *
+ * @return array
+ */
+function jcr_section_column_map()
+{
+    $section_custom = jcr_get_section_custom_fields();
+    $section_custom_map = array();
+
+    if ($section_custom) {
+        foreach ($section_custom as $i => $name) {
+            $section_custom_map[$name] = 'jcr_sec_custom_'.$i;
+        }
+    }
+    
+    return $section_custom_map;
+}
+
+/**
+ * Populates the current section custom field data.
+ *
+ * Fills custom field members of $thissection global from a database row.
+ *
+ *
+ * @param array $rs A section as an assocative array
+ * @example
+ * if ($rs = safe_rows_start("*",
+ *     'txp_section',
+ *     "name = ".$thissection['name']
+ * ))
+ * {
+ *     global $thissection;
+ *     while ($row = nextRow($rs))
+ *     {
+ *         jcr_populate_section_custom_field_data($row);
+ *         echo $thisarticle['title'];
+ *     }
+ * }
+ */
+function jcr_populate_section_custom_field_data($rs)
+{
+    global $thissection;
+
+    foreach (jcr_section_column_map() as $key => $column) {
+        $thissection[$key] = isset($rs[$column]) ? $rs[$column] : null;
+    }
+}
+
   /**
    * Public tag: Output custom section field
+   * @param  string $atts[name] Name of custom field.
    * @param  string $atts[escape] Convert special characters to HTML entities.
+   * @param  string $atts[default] Default output if field is empty.
    * @return string custom field output
    * <code>
-   *        <txp:jcr_section_custom escape="html" />
+   *        <txp:jcr_section_custom name="title_image" escape="html" />
    * </code>
    */
 
     function jcr_section_custom($atts)
     {
         global $thissection;
-
+        
         assert_section();
 
         extract(lAtts(array(
-            'escape' => 'html',
+            'name'    => get_pref('section_custom_1_set'),
+            'escape'  => 'html',
+            'default' => '',
         ), $atts));
 
-        return ($escape == 'html')
-            ? txpspecialchars($thissection['jcr_section_custom'])
-            : $thissection['jcr_section_custom'];
+        $name = strtolower($name);
+        
+        if ($rs = safe_rows_start("*",
+            'txp_section',
+            "name = ".$thissection['name']
+        )) {
+            while ($row = nextRow($rs)) {
+                jcr_populate_section_custom_field_data($row);
+            }
+        }
+                
+        if (!isset($thissection[$name])) {
+            trigger_error(gTxt('field_not_found', array('{name}' => $name)), E_USER_NOTICE);
+            return '';
+        }
+        
+        if ($thissection[$name] !== '') {
+            $out = $thissection[$name];
+        } else {
+            $out = $default;
+        }
+        
+        $out = ($escape === 'html' ? txpspecialchars($out) : parse($out));
+
+        return $out;
     }
 # --- END PLUGIN CODE ---
 if (0) {
@@ -194,15 +351,15 @@ if (0) {
 # --- BEGIN PLUGIN HELP ---
 h1. jcr_section_custom
 
-Adds a single extra custom field of up to 255 characters to the "Presentation › Sections":http://docs.textpattern.io/administration/sections-panel panel and provides a corresponding tag to output the custom field. 
+Adds multiple extra custom fields of up to 255 characters to the "Presentation › Sections":http://docs.textpattern.io/administration/sections-panel panel and provides a corresponding tag to output the custom field. 
 
 
 h2. Use cases
 
 Use whenever extra information needs to be stored with a section. For example:
 
-* Store a txp image ID number and use it as a title image for a section.
-* Store an image hex color to colour-code a section.
+* Store a txp image ID number and use it to associate a cover image with the section.
+* Store associated details, for example the background colour or key colour of a section.
 * …
 
 
@@ -215,26 +372,34 @@ h2(#tags). Tags
 
 bc. <txp:jcr_section_custom />
 
-Outputs the content of the file custom field.
+Outputs the content of the section custom field.
 
 h3. Tag attributes
+
+*name*
+Specifies the name of the section custom field. 
+Example: Use @name="title_image"@ to output the title_image custom field. Default: custom_field_1.
 
 *escape*
 Escape HTML entities such as @<@, @>@ and @&@ prior to echoing the field contents. 
 Example: Use @escape=""@ to suppress conversion. Default: @html@.
 
+*default*
+Specifies the default output if the custom field is empty
+Example: Use @default="123"@ to output "123", e.g. for use as the default image ID number. Default: empty.
+
 
 h2(#examples). Example
 
-Output a list of sections with respective title images:
+Outputs the specified title image from the image ID number. If no image is specified a default image with image ID# 123 is output:
 
-bc. <txp:section_list wraptag="ul" break="li">
-  <a href="<txp:section url="1" />" title="<txp:section title="1" />">
-    <txp:image id='<txp:jcr_section_custom />' />
-  </a>
+bc. <txp:section_list>
+  <txp:images id='<txp:jcr_section_custom name="title_image" escape="" default="123" />'>
+     <txp:image />
+  </txp:images>
 </txp:section_list>
 
-p. when the file custom field is used to store the Image ID# of the section title image.
+p. where the section custom field is used to store the Image ID# of the title image.
 
 
 h2. Changing the label of the custom field
@@ -243,7 +408,9 @@ The name of custom field can be changed by specifying a new label using the _Ins
 
 bc.. #@admin
 #@language en-gb
-jcr_section_custom => Your label
+jcr_sec_custom_1 => Your label
+jcr_sec_custom_2 => Your other label
+…
 
 p. replacing @en-gb@ with your own language and @Your label@ with your own desired label.
 
@@ -254,6 +421,10 @@ The plugin cleans up after itself: deinstalling the plugin removes the extra col
 
 
 h2(#changelog). Changelog
+
+h3. Version 0.1 – 2018/07/18
+
+* Remedy table not being created on install 
 
 h3. Version 0.1 – 2016/03/04
 

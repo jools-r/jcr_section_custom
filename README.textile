@@ -1,14 +1,14 @@
 h1. jcr_section_custom
 
-Adds a single extra custom field of up to 255 characters to the "Presentation › Sections":http://docs.textpattern.io/administration/sections-panel panel and provides a corresponding tag to output the custom field. 
+Adds multiple extra custom fields of up to 255 characters to the "Presentation › Sections":http://docs.textpattern.io/administration/sections-panel panel and provides a corresponding tag to output the custom field. 
 
 
 h2. Use cases
 
 Use whenever extra information needs to be stored with a section. For example:
 
-* Store a txp image ID number and use it as a title image for a section.
-* Store an image hex color to colour-code a section.
+* Store a txp image ID number and use it to associate a cover image with the section.
+* Store associated details, for example the background colour or key colour of a section.
 * …
 
 
@@ -25,22 +25,31 @@ Outputs the content of the section custom field.
 
 h3. Tag attributes
 
+*name*
+Specifies the name of the section custom field. 
+Example: Use @name="title_image"@ to output the title_image custom field. Default: custom_field_1.
+
 *escape*
 Escape HTML entities such as @<@, @>@ and @&@ prior to echoing the field contents. 
 Example: Use @escape=""@ to suppress conversion. Default: @html@.
 
+*default*
+Specifies the default output if the custom field is empty
+Example: Use @default="123"@ to output "123", e.g. for use as the default image ID number. Default: empty.
+
 
 h2(#examples). Example
 
-Output a list of sections with respective title images:
+Outputs the specified title image from the image ID number. If no image is specified a default image with image ID# 123 is output:
 
-bc. <txp:section_list wraptag="ul" break="li">
-  <a href="<txp:section url="1" />" title="<txp:section title="1" />">
-    <txp:image id='<txp:jcr_section_custom />' />
-  </a>
+bc. <txp:section_list>
+  <txp:images id='<txp:jcr_section_custom name="title_image" escape="" default="123" />'>
+     <txp:image />
+  </txp:images>
 </txp:section_list>
 
-p. when the file custom field is used to store the Image ID# of the section title image.
+p. where the section custom field is used to store the Image ID# of the title image.
+
 
 h2. Changing the label of the custom field
 
@@ -48,9 +57,11 @@ The name of custom field can be changed by specifying a new label using the _Ins
 
 bc.. #@admin
 #@language en-gb
-jcr_section_custom => Your label
+jcr_sec_custom_1 => Your label
+jcr_sec_custom_2 => Your other label
+…
 
-p. replacing @en-gb@ with your own language code and @Your label@ with your own desired label.
+p. replacing @en-gb@ with your own language and @Your label@ with your own desired label.
 
 
 h2(#deinstallation). De-installation
@@ -59,6 +70,10 @@ The plugin cleans up after itself: deinstalling the plugin removes the extra col
 
 
 h2(#changelog). Changelog
+
+h3. Version 0.1 – 2018/07/18
+
+* Remedy table not being created on install 
 
 h3. Version 0.1 – 2016/03/04
 
