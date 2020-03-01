@@ -25,8 +25,8 @@ Outputs the content of the section custom field.
 
 ### Tag attributes
 
-*escape*
-Escape HTML entities such as @<@, @>@ and @&@ prior to echoing the field contents. 
+**escape**
+Escape HTML entities such as `<`, `>` and `&` prior to echoing the field contents. 
 Example: Use `escape=""` to suppress conversion. Default: `html`.
 
 
