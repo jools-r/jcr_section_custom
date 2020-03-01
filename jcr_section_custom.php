@@ -45,7 +45,7 @@ $plugin['type'] = '1';
 if (!defined('PLUGIN_HAS_PREFS')) define('PLUGIN_HAS_PREFS', 0x0001); // This plugin wants to receive "plugin_prefs.{$plugin['name']}" events
 if (!defined('PLUGIN_LIFECYCLE_NOTIFY')) define('PLUGIN_LIFECYCLE_NOTIFY', 0x0002); // This plugin wants to receive "plugin_lifecycle.{$plugin['name']}" events
 
-$plugin['flags'] = '';
+$plugin['flags'] = '2';
 
 // Plugin 'textpack' is optional. It provides i18n strings to be used in conjunction with gTxt().
 // Syntax:
@@ -82,7 +82,7 @@ class jcr_section_custom
 	}
 
 	/**
-   * Add and remove custom field from txp_file table.
+   * Add and remove custom field from txp_section table.
    *
    * @param $event string
    * @param $step string  The lifecycle phase of this plugin
@@ -102,7 +102,7 @@ class jcr_section_custom
               break;
           case 'deleted':
               safe_alter(
-                'txp_file',
+                'txp_section',
                 'DROP COLUMN jcr_section_custom'
               );
               break;
@@ -111,12 +111,12 @@ class jcr_section_custom
   }
 
 	/**
-	 * Paint additional fields for file custom field
+	 * Paint additional fields for section custom field
 	 *
 	 * @param $event string
 	 * @param $step string
 	 * @param $dummy string
-	 * @param $rs array The current file's data
+	 * @param $rs array The current section's data
 	 * @return string
 	 */
 	public static function ui($event, $step, $dummy, $rs)
@@ -130,7 +130,7 @@ class jcr_section_custom
 	}
 
 	/**
-	 * Save additional file custom fields
+	 * Save additional section custom fields
 	 *
 	 * @param $event string
 	 * @param $step string
@@ -215,7 +215,7 @@ h2(#tags). Tags
 
 bc. <txp:jcr_section_custom />
 
-Outputs the content of the file custom field.
+Outputs the content of the section custom field.
 
 h3. Tag attributes
 
@@ -234,7 +234,7 @@ bc. <txp:section_list wraptag="ul" break="li">
   </a>
 </txp:section_list>
 
-p. when the file custom field is used to store the Image ID# of the section title image.
+p. when the section custom field is used to store the Image ID# of the section title image.
 
 
 h2. Changing the label of the custom field

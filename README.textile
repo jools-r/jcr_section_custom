@@ -40,7 +40,7 @@ bc. <txp:section_list wraptag="ul" break="li">
   </a>
 </txp:section_list>
 
-p. when the file custom field is used to store the Image ID# of the section title image.
+p. when the section custom field is used to store the Image ID# of the section title image.
 
 h2. Changing the label of the custom field
 
