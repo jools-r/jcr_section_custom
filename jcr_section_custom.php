@@ -180,7 +180,7 @@ class jcr_section_custom
 		   jcr_sec_custom_3 = '$jcr_sec_custom_3',
 		   jcr_sec_custom_4 = '$jcr_sec_custom_4',
 		   jcr_sec_custom_5 = '$jcr_sec_custom_5'",
-			"name = $name"
+			"`name` = '$name'"
 		);
 	}
 
