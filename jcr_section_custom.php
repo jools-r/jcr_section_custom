@@ -45,7 +45,7 @@ $plugin['type'] = '1';
 if (!defined('PLUGIN_HAS_PREFS')) define('PLUGIN_HAS_PREFS', 0x0001); // This plugin wants to receive "plugin_prefs.{$plugin['name']}" events
 if (!defined('PLUGIN_LIFECYCLE_NOTIFY')) define('PLUGIN_LIFECYCLE_NOTIFY', 0x0002); // This plugin wants to receive "plugin_lifecycle.{$plugin['name']}" events
 
-$plugin['flags'] = '2';
+$plugin['flags'] = '3';
 
 // Plugin 'textpack' is optional. It provides i18n strings to be used in conjunction with gTxt().
 // Syntax:
@@ -57,12 +57,14 @@ $plugin['flags'] = '2';
 $plugin['textpack'] = <<< EOT
 #@admin
 #@language en-gb
+jcr_section_custom => Section custom fields
 jcr_sec_custom_1 => Hero image
 jcr_sec_custom_2 => Menu title
 jcr_sec_custom_3 => Page title
 jcr_sec_custom_4 => Accent color
 jcr_sec_custom_5 => Background color
 #@language de-de
+jcr_section_custom => Sektion Custom-Felder
 jcr_sec_custom_1 => Titelbild
 jcr_sec_custom_2 => Menüname
 jcr_sec_custom_3 => Seitentitel
@@ -87,6 +89,13 @@ class jcr_section_custom
 		register_callback(array(__CLASS__, 'lifecycle'), 'plugin_lifecycle.jcr_section_custom');
 		register_callback(array(__CLASS__, 'ui'), 'section_ui', 'extend_detail_form');
 		register_callback(array(__CLASS__, 'save'), 'section', 'section_save');
+
+		// Prefs pane for custom fields
+		add_privs('prefs.jcr_section_custom', '1');
+
+		// Redirect 'Options' link on plugins panel to preferences pane
+		add_privs('plugin_prefs.jcr_section_custom', '1');
+		register_callback(array(__CLASS__, 'options_prefs_redirect'), 'plugin_prefs.jcr_section_custom');
 	}
 
 	/**
@@ -198,6 +207,15 @@ class jcr_section_custom
 	public static function section_custom_set($name, $val)
 	{
 		return pluggable_ui('prefs_ui', 'section_custom_set', text_input($name, $val, INPUT_REGULAR), $name, $val);
+	}
+
+	/**
+	 * Re-route 'Options' link on Plugins panel to Admin › Preferences panel
+	 *
+	 */
+	public static function options_prefs_redirect()
+	{
+		header("Location: index.php?event=prefs#prefs_group_jcr_section_custom");
 	}
 
 }
