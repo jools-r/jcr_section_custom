@@ -306,9 +306,11 @@ function jcr_section_custom($atts)
 	$current_section = empty($thissection) ? $pretext['s'] : $thissection['name'];
 
 	extract(lAtts(array(
+		'class'   => '',
 		'name'    => get_pref('section_custom_1_set'),
-		'escape'  => 'html',
+		'escape'  => null,
 		'default' => '',
+		'wraptag' => '',
 	), $atts));
 
 	$name = strtolower($name);
