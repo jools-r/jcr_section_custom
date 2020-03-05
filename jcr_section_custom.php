@@ -157,6 +157,8 @@ class jcr_section_custom
 	 */
 	public static function ui($event, $step, $dummy, $rs)
 	{
+		global $prefs;
+
 		extract(lAtts(array(
 			'jcr_sec_custom_1' => '',
 			'jcr_sec_custom_2' => '',
@@ -165,12 +167,20 @@ class jcr_section_custom
 			'jcr_sec_custom_5' => ''
 		), $rs, 0));
 
-		return
-			inputLabel('jcr_sec_custom_1', fInput('text', 'jcr_sec_custom_1', $jcr_sec_custom_1, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_1'), 'jcr_sec_custom_1').n.
-			inputLabel('jcr_sec_custom_2', fInput('text', 'jcr_sec_custom_2', $jcr_sec_custom_2, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_2'), 'jcr_sec_custom_2').n.
-			inputLabel('jcr_sec_custom_3', fInput('text', 'jcr_sec_custom_3', $jcr_sec_custom_3, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_3'), 'jcr_sec_custom_3').n.
-			inputLabel('jcr_sec_custom_4', fInput('text', 'jcr_sec_custom_4', $jcr_sec_custom_4, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_4'), 'jcr_sec_custom_4').n.
-			inputLabel('jcr_sec_custom_5', fInput('text', 'jcr_sec_custom_5', $jcr_sec_custom_5, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_5'), 'jcr_sec_custom_5').n;
+		$out = "";
+
+		$cfs = preg_grep('/^section_custom_\d+_set/', array_keys($prefs));
+
+		foreach ($cfs as $name) {
+
+			preg_match('/(\d+)/', $name, $match);
+
+			if ($prefs[$name] !== '') {
+				$out .= inputLabel('jcr_sec_custom_'.$match[1], fInput('text', 'jcr_sec_custom_'.$match[1], ${'jcr_sec_custom_'.$match[1]}, '', '', '', INPUT_REGULAR, '', 'jcr_sec_custom_'.$match[1]), 'jcr_sec_custom_'.$match[1]).n;
+			}
+		}
+
+		return $out;
 	}
 
 	/**
@@ -189,7 +199,7 @@ class jcr_section_custom
 			jcr_sec_custom_3 = '$jcr_sec_custom_3',
 			jcr_sec_custom_4 = '$jcr_sec_custom_4',
 			jcr_sec_custom_5 = '$jcr_sec_custom_5'",
-			"`name` = '$name'"
+			"name = '$name'"
 		);
 	}
 
