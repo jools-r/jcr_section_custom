@@ -238,7 +238,8 @@ if (txpinterface === 'admin') {
 
 	if (class_exists('\Textpattern\Tag\Registry')) {
 		Txp::get('\Textpattern\Tag\Registry')
-			->register('jcr_section_custom');
+			->register('jcr_section_custom')
+			->register('jcr_if_section_custom');
 	}
 
 }
@@ -346,6 +347,57 @@ function jcr_section_custom($atts)
 	return doTag($thing, $wraptag, $class);
 }
 
+/**
+ * Public tag: Output custom section field
+ * @param  string $atts[name]    Name of custom field.
+ * @param  string $atts[value]   Value to test against (optional).
+ * @param  string $atts[match]   Match testing: esact, any, all, pattern.
+ * @param  string $atts[separator] Item separator for match="any" or "all". Otherwise ignored.
+ * @return string custom field output
+ * <code>
+ *        <txp:jcr_if_section_custom name="menu_title" /> … <txp:else /> … </txp:jcr_if_section_custom>
+ * </code>
+ */
+function jcr_if_section_custom($atts, $thing = null)
+{
+	global $thissection, $pretext;
+
+	// If not currently in section context, get current section from pretext
+	$current_section = empty($thissection) ? $pretext['s'] : $thissection['name'];
+
+	extract($atts = lAtts(array(
+		'name'      => get_pref('section_custom_1_set'),
+		'value'     => null,
+		'match'     => 'exact',
+		'separator' => '',
+	), $atts));
+
+	$name = strtolower($name);
+
+	if ($rs = safe_rows_start("*",
+		'txp_section',
+		"name = '".$current_section."'"
+	)) {
+		while ($row = nextRow($rs)) {
+			// Populate section custom field data;
+			foreach (jcr_section_column_map() as $key => $column) {
+				$currentsection[$key] = isset($row[$column]) ? $row[$column] : null;
+			}
+		}
+	}
+
+	if (!isset($currentsection[$name])) {
+		trigger_error(gTxt('field_not_found', array('{name}' => $name)), E_USER_NOTICE);
+		return '';
+	}
+
+	if ($value !== null) {
+		$cond = txp_match($atts, $currentsection[$name]);
+	} else {
+		$cond = ($currentsection[$name] !== '');
+	}
+
+	return isset($thing) ? parse($thing, !empty($cond)) : !empty($cond);
 }
 # --- END PLUGIN CODE ---
 if (0) {
