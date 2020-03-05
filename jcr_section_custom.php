@@ -329,15 +329,23 @@ function jcr_section_custom($atts)
 		return '';
 	}
 
-	if ($thissection[$name] !== '') {
-		$out = $thissection[$name];
-	} else {
-		$out = $default;
+	if (!isset($thing)) {
+		$thing = $currentsection[$name] !== '' ? $currentsection[$name] : $default;
 	}
 
-	$out = ($escape === 'html' ? txpspecialchars($out) : parse($out));
+	if ($escape === null) {
+		if(function_exists('txp_escape')) {
+			$thing = txp_escape(array('escape' => $escape), $thing);
+		} else {
+			$thing = txpspecialchars($thing);
+		}    
+	} else {
+		$thing = parse($thing);
+	}
 
-	return $out;
+	return doTag($thing, $wraptag, $class);
+}
+
 }
 # --- END PLUGIN CODE ---
 if (0) {
