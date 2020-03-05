@@ -114,11 +114,11 @@ class jcr_section_custom
 					 ADD COLUMN jcr_sec_custom_5 VARCHAR(255) NULL AFTER jcr_sec_custom_4'
 				);
 				// Add prefs for section custom field names
-				set_pref("section_custom_1_set", "", "jcr_section_custom", "0", "section_custom_set", "1");
-				set_pref("section_custom_2_set", "", "jcr_section_custom", "0", "section_custom_set", "2");
-				set_pref("section_custom_3_set", "", "jcr_section_custom", "0", "section_custom_set", "3");
-				set_pref("section_custom_4_set", "", "jcr_section_custom", "0", "section_custom_set", "4");
-				set_pref("section_custom_5_set", "", "jcr_section_custom", "0", "section_custom_set", "5");
+				create_pref("section_custom_1_set", "", "jcr_section_custom", "0", "section_custom_set", "1");
+				create_pref("section_custom_2_set", "", "jcr_section_custom", "0", "section_custom_set", "2");
+				create_pref("section_custom_3_set", "", "jcr_section_custom", "0", "section_custom_set", "3");
+				create_pref("section_custom_4_set", "", "jcr_section_custom", "0", "section_custom_set", "4");
+				create_pref("section_custom_5_set", "", "jcr_section_custom", "0", "section_custom_set", "5");
 				break;
 			case 'deleted':
 				// Remove columns from section table
