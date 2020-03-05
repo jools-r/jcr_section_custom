@@ -17,7 +17,7 @@ $plugin['name'] = 'jcr_section_custom';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.15';
+$plugin['version'] = '0.2';
 $plugin['author'] = 'jcr / txpbuilders';
 $plugin['author_uri'] = 'http://txp.builders';
 $plugin['description'] = 'Adds multiple custom fields to the sections panel';
@@ -524,15 +524,11 @@ The plugin cleans up after itself: deinstalling the plugin removes the extra col
 
 h2(#changelog). Changelog + Credits
 
-h3. Version 0.1 – 2018/07/18
-
-* Remedy table not being created on install 
-
-h3. Version 0.1 – 2016/03/04
-
-* First release
 h3. changelog
 
+* Version 0.2 – 2020/03/04 – Expand to handle multiple custom fields
+* Version 0.1 – 2018/07/18 – Remedy table not being created on install 
+* Version 0.1 – 2016/03/04 – First release
 
 h3. Credits
 
