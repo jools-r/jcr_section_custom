@@ -288,36 +288,6 @@ function jcr_section_column_map()
 }
 
 /**
- * Populates the current section custom field data.
- *
- * Fills custom field members of $thissection global from a database row.
- *
- *
- * @param array $rs A section as an assocative array
- * @example
- * if ($rs = safe_rows_start("*",
- *     'txp_section',
- *     "name = ".$thissection['name']
- * ))
- * {
- *     global $thissection;
- *     while ($row = nextRow($rs))
- *     {
- *         jcr_populate_section_custom_field_data($row);
- *         echo $thisarticle['title'];
- *     }
- * }
- */
-function jcr_populate_section_custom_field_data($rs)
-{
-	global $thissection;
-
-	foreach (jcr_section_column_map() as $key => $column) {
-		$thissection[$key] = isset($rs[$column]) ? $rs[$column] : null;
-	}
-}
-
-/**
  * Public tag: Output custom section field
  * @param  string $atts[name] Name of custom field.
  * @param  string $atts[escape] Convert special characters to HTML entities.
@@ -327,12 +297,12 @@ function jcr_populate_section_custom_field_data($rs)
  *        <txp:jcr_section_custom name="title_image" escape="html" />
  * </code>
  */
-
 function jcr_section_custom($atts)
 {
-	global $thissection;
-	
-	assert_section();
+	global $thissection, $pretext;
+
+	// If not currently in section context, get current section from pretext
+	$current_section = empty($thissection) ? $pretext['s'] : $thissection['name'];
 
 	extract(lAtts(array(
 		'name'    => get_pref('section_custom_1_set'),
@@ -344,14 +314,17 @@ function jcr_section_custom($atts)
 
 	if ($rs = safe_rows_start("*",
 		'txp_section',
-		"name = ".$thissection['name']
+		"name = '".$current_section."'"
 	)) {
 		while ($row = nextRow($rs)) {
-			jcr_populate_section_custom_field_data($row);
+			// Populate section custom field data;
+			foreach (jcr_section_column_map() as $key => $column) {
+				$currentsection[$key] = isset($row[$column]) ? $row[$column] : null;
+			}
 		}
 	}
 
-	if (!isset($thissection[$name])) {
+	if (!isset($currentsection[$name])) {
 		trigger_error(gTxt('field_not_found', array('{name}' => $name)), E_USER_NOTICE);
 		return '';
 	}
