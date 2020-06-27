@@ -17,7 +17,7 @@ $plugin['name'] = 'jcr_section_custom';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.2';
+$plugin['version'] = '0.2.1';
 $plugin['author'] = 'jcr / txpbuilders';
 $plugin['author_uri'] = 'http://txp.builders';
 $plugin['description'] = 'Adds multiple custom fields to the sections panel';
@@ -54,22 +54,19 @@ $plugin['flags'] = '3';
 // #@language ISO-LANGUAGE-CODE
 // abc_string_name => Localized String
 
+// Customise the custom field display name as follows:
+// jcr_sec_custom_1 => Hero image
+// jcr_sec_custom_2 => Menu title
+// jcr_sec_custom_3 => Page title
+// jcr_sec_custom_4 => Accent color
+// jcr_sec_custom_5 => Background color
+
 $plugin['textpack'] = <<< EOT
 #@admin
 #@language en-gb
 jcr_section_custom => Section custom fields
-jcr_sec_custom_1 => Hero image
-jcr_sec_custom_2 => Menu title
-jcr_sec_custom_3 => Page title
-jcr_sec_custom_4 => Accent color
-jcr_sec_custom_5 => Background color
 #@language de-de
 jcr_section_custom => Sektion Custom-Felder
-jcr_sec_custom_1 => Titelbild
-jcr_sec_custom_2 => Menüname
-jcr_sec_custom_3 => Seitentitel
-jcr_sec_custom_4 => Akzentfarbe
-jcr_sec_custom_5 => Hintergrundfarbe
 EOT;
 
 // End of textpack
@@ -116,11 +113,11 @@ class jcr_section_custom
 				// Add section custom fields to txp_section table
 				safe_alter(
 					'txp_section',
-					'ADD COLUMN jcr_sec_custom_1 VARCHAR(255) NULL AFTER title,
-					 ADD COLUMN jcr_sec_custom_2 VARCHAR(255) NULL AFTER jcr_sec_custom_1,
-					 ADD COLUMN jcr_sec_custom_3 VARCHAR(255) NULL AFTER jcr_sec_custom_2,
-					 ADD COLUMN jcr_sec_custom_4 VARCHAR(255) NULL AFTER jcr_sec_custom_3,
-					 ADD COLUMN jcr_sec_custom_5 VARCHAR(255) NULL AFTER jcr_sec_custom_4'
+					"ADD COLUMN jcr_sec_custom_1 VARCHAR(255) NOT NULL DEFAULT '' AFTER title,
+					 ADD COLUMN jcr_sec_custom_2 VARCHAR(255) NOT NULL DEFAULT '' jcr_sec_custom_1,
+					 ADD COLUMN jcr_sec_custom_3 VARCHAR(255) NOT NULL DEFAULT '' jcr_sec_custom_2,
+					 ADD COLUMN jcr_sec_custom_4 VARCHAR(255) NOT NULL DEFAULT '' jcr_sec_custom_3,
+					 ADD COLUMN jcr_sec_custom_5 VARCHAR(255) NOT NULL DEFAULT '' jcr_sec_custom_4"
 				);
 				// Add prefs for section custom field names
 				create_pref("section_custom_1_set", "", "jcr_section_custom", "0", "section_custom_set", "1");
@@ -298,7 +295,7 @@ function jcr_section_column_map()
  *        <txp:jcr_section_custom name="title_image" escape="html" />
  * </code>
  */
-function jcr_section_custom($atts)
+function jcr_section_custom($atts, $thing = null)
 {
 	global $thissection, $pretext;
 
@@ -315,10 +312,12 @@ function jcr_section_custom($atts)
 
 	$name = strtolower($name);
 
-	if ($rs = safe_rows_start("*",
+	$rs = safe_rows_start("*",
 		'txp_section',
 		"name = '".$current_section."'"
-	)) {
+	);
+
+	if ($rs) {
 		while ($row = nextRow($rs)) {
 			// Populate section custom field data;
 			foreach (jcr_section_column_map() as $key => $column) {
@@ -336,17 +335,9 @@ function jcr_section_custom($atts)
 		$thing = $currentsection[$name] !== '' ? $currentsection[$name] : $default;
 	}
 
-	if ($escape === null) {
-		if(function_exists('txp_escape')) {
-			$thing = txp_escape(array('escape' => $escape), $thing);
-		} else {
-			$thing = txpspecialchars($thing);
-		}    
-	} else {
-		$thing = parse($thing);
-	}
+	$thing = ($escape === null ? txpspecialchars($thing) : parse($thing));
 
-	return doTag($thing, $wraptag, $class);
+	return !empty($thing) ? doTag($thing, $wraptag, $class) : '';
 }
 
 /**
@@ -376,10 +367,12 @@ function jcr_if_section_custom($atts, $thing = null)
 
 	$name = strtolower($name);
 
-	if ($rs = safe_rows_start("*",
+	$rs = safe_rows_start("*",
 		'txp_section',
 		"name = '".$current_section."'"
-	)) {
+	);
+
+	if ($rs) {
 		while ($row = nextRow($rs)) {
 			// Populate section custom field data;
 			foreach (jcr_section_column_map() as $key => $column) {
@@ -528,6 +521,7 @@ h2(#changelog). Changelog + Credits
 
 h3. changelog
 
+* Version 0.2.1 – 2020/06/27 – Fix for missing custom_field name vs. missing value for cf
 * Version 0.2 – 2020/03/04 – Expand to handle multiple custom fields
 * Version 0.1 – 2018/07/18 – Remedy table not being created on install 
 * Version 0.1 – 2016/03/04 – First release
