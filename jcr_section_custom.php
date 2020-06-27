@@ -17,7 +17,7 @@ $plugin['name'] = 'jcr_section_custom';
 // 1 = Plugin help is in raw HTML.  Not recommended.
 # $plugin['allow_html_help'] = 1;
 
-$plugin['version'] = '0.2.1';
+$plugin['version'] = '0.2.2';
 $plugin['author'] = 'jcr / txpbuilders';
 $plugin['author_uri'] = 'http://txp.builders';
 $plugin['description'] = 'Adds multiple custom fields to the sections panel';
@@ -111,20 +111,57 @@ class jcr_section_custom
 				break;
 			case 'installed':
 				// Add section custom fields to txp_section table
-				safe_alter(
-					'txp_section',
-					"ADD COLUMN jcr_sec_custom_1 VARCHAR(255) NOT NULL DEFAULT '' AFTER title,
-					 ADD COLUMN jcr_sec_custom_2 VARCHAR(255) NOT NULL DEFAULT '' jcr_sec_custom_1,
-					 ADD COLUMN jcr_sec_custom_3 VARCHAR(255) NOT NULL DEFAULT '' jcr_sec_custom_2,
-					 ADD COLUMN jcr_sec_custom_4 VARCHAR(255) NOT NULL DEFAULT '' jcr_sec_custom_3,
-					 ADD COLUMN jcr_sec_custom_5 VARCHAR(255) NOT NULL DEFAULT '' jcr_sec_custom_4"
-				);
+				$cols_exist = safe_query("SHOW COLUMNS FROM ".safe_pfx('txp_section')." LIKE 'jcr_sec_custom_1'");
+				if (@numRows($cols_exist) == 0) {
+					safe_alter(
+						'txp_section',
+						"ADD COLUMN jcr_sec_custom_1 VARCHAR(255) NOT NULL DEFAULT '' AFTER title,
+						 ADD COLUMN jcr_sec_custom_2 VARCHAR(255) NOT NULL DEFAULT '' AFTER jcr_sec_custom_1,
+						 ADD COLUMN jcr_sec_custom_3 VARCHAR(255) NOT NULL DEFAULT '' AFTER jcr_sec_custom_2,
+						 ADD COLUMN jcr_sec_custom_4 VARCHAR(255) NOT NULL DEFAULT '' AFTER jcr_sec_custom_3,
+						 ADD COLUMN jcr_sec_custom_5 VARCHAR(255) NOT NULL DEFAULT '' AFTER jcr_sec_custom_4"
+					);
+				}
+
 				// Add prefs for section custom field names
 				create_pref("section_custom_1_set", "", "jcr_section_custom", "0", "section_custom_set", "1");
 				create_pref("section_custom_2_set", "", "jcr_section_custom", "0", "section_custom_set", "2");
 				create_pref("section_custom_3_set", "", "jcr_section_custom", "0", "section_custom_set", "3");
 				create_pref("section_custom_4_set", "", "jcr_section_custom", "0", "section_custom_set", "4");
 				create_pref("section_custom_5_set", "", "jcr_section_custom", "0", "section_custom_set", "5");
+
+				// Insert initial value for cf1 if none already exists (so that upgrade works)
+				$cf_pref = get_pref('section_custom_1_set');
+				if ($cf_pref === '') {
+					set_pref('section_custom_1_set','custom1');
+				}
+
+				// Upgrade: Migrate v1 plugin legacy column
+				$legacy = safe_query("SHOW COLUMNS FROM ".safe_pfx('txp_section')." LIKE 'jcr_section_custom'");
+				if (@numRows($legacy) > 0) {
+					// Copy contents of jcr_section_custom to jcr_sec_custom_1
+					safe_update('txp_section', "`jcr_sec_custom_1` = `jcr_section_custom`", "1=1");
+					// Delete jcr_section_custom column
+					safe_alter('txp_section', "DROP COLUMN `jcr_section_custom`");
+				}
+
+				// Upgrade: Migrate from NULL to '' default value
+				$has_nulls = safe_rows_start("*", 'txp_section', "`jcr_sec_custom_1` IS NULL OR `jcr_sec_custom_2` IS NULL OR `jcr_sec_custom_3` IS NULL OR `jcr_sec_custom_4` IS NULL OR `jcr_sec_custom_5` IS NULL");
+				if (@numRows($has_nulls) > 0) {
+					safe_update('txp_section', "jcr_sec_custom_1 = ''", "jcr_sec_custom_1 IS NULL");
+					safe_update('txp_section', "jcr_sec_custom_2 = ''", "jcr_sec_custom_2 IS NULL");
+					safe_update('txp_section', "jcr_sec_custom_3 = ''", "jcr_sec_custom_3 IS NULL");
+					safe_update('txp_section', "jcr_sec_custom_4 = ''", "jcr_sec_custom_4 IS NULL");
+					safe_update('txp_section', "jcr_sec_custom_5 = ''", "jcr_sec_custom_5 IS NULL");
+					safe_alter(
+						'txp_section', 
+						"MODIFY jcr_sec_custom_1  VARCHAR(255) NOT NULL DEFAULT '',
+						 MODIFY jcr_sec_custom_2  VARCHAR(255) NOT NULL DEFAULT '',
+						 MODIFY jcr_sec_custom_3  VARCHAR(255) NOT NULL DEFAULT '',
+						 MODIFY jcr_sec_custom_4  VARCHAR(255) NOT NULL DEFAULT '',
+						 MODIFY jcr_sec_custom_5  VARCHAR(255) NOT NULL DEFAULT ''"
+					);
+				}
 				break;
 			case 'deleted':
 				// Remove columns from section table
@@ -408,7 +445,6 @@ h1. jcr_section_custom
 
 Adds up to five extra custom fields of up to 255 characters to the "Presentation › Sections":http://docs.textpattern.io/administration/sections-panel panel along with  corresponding tags to output the custom field.and to test if it contains a value or matches a specific value.
 
-
 h3. Use cases
 
 Use whenever extra information needs to be stored with a section. For example:
@@ -419,11 +455,9 @@ Use whenever extra information needs to be stored with a section. For example:
 * To create links between parallel sections in different languages.
 * …
 
-
 h2(#installation). Installation
 
 Paste the code into the  _Admin › Plugins_ panel, install and enable the plugin.
-
 
 h2(#tags). Tags + Examples
 
@@ -477,14 +511,13 @@ Default: exact.
 Item separator for match="any" or "all". Otherwise ignored
 Default: empty.
 
-
 h3. Example
 
 1. Outputs the specified title image from the image ID number. If no image is specified a default image with image ID# 123 is output:
 
 bc. <txp:section_list>
   <txp:images id='<txp:jcr_section_custom name="title_image" escape="" default="123" />'>
-     <txp:image />
+	 <txp:image />
   </txp:images>
 </txp:section_list>
 
@@ -494,10 +527,9 @@ p. where the section custom field is used to store the Image ID# of the title im
 
 bc. <txp:section_list wraptag="ul" break="" class="nav en">
   <txp:jcr_if_section_custom name="language" value="english">
-    <li><txp:section title link /></li>
+	<li><txp:section title link /></li>
   </txp:jcr_if_section_custom>
 </txp:section_list>
-
 
 h2(#label). Changing the label of the custom field
 
@@ -511,16 +543,15 @@ jcr_sec_custom_2 => Your other label
 
 p. replacing @en-gb@ with your own language and @Your label@ with your own desired label.
 
-
 h2(#deinstallation). De-installation
 
 The plugin cleans up after itself: deinstalling the plugin removes the extra column from the database. To stop using the plugin but keep the database tables, just disable (deactivate) the plugin but don't delete it.
-
 
 h2(#changelog). Changelog + Credits
 
 h3. changelog
 
+* Version 0.2.2 – 2020/06/27 – Handle migration from previous versions of the plugin on install
 * Version 0.2.1 – 2020/06/27 – Fix for missing custom_field name vs. missing value for cf
 * Version 0.2 – 2020/03/04 – Expand to handle multiple custom fields
 * Version 0.1 – 2018/07/18 – Remedy table not being created on install 
